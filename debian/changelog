@@ -1,3 +1,10 @@
+curl (7.18.2-8maemo6+0m5+0cssu0) unstable; urgency=low
+
+  * Fixed #12554: CVE-2010-0734: data callback vulnerability 
+    see http://curl.haxx.se/docs/adv_20100209.html
+
+ -- Christian Ratzenhofer <christian_ratzenhofer@yahoo.de>  Fri,  4 May 2012 21:45:47 +0200
+
 curl (7.18.2-8maemo6+0m5) unstable; urgency=low
 
   * This entry has been added by BIFH queue processor
