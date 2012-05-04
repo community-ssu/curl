@@ -1,0 +1,71 @@
+Index: curl/lib/Makefile.am
+===================================================================
+--- curl.orig/lib/Makefile.am	2008-06-04 19:03:05.000000000 +0200
++++ curl/lib/Makefile.am	2008-06-04 19:03:05.000000000 +0200
+@@ -39,7 +39,7 @@
+ 
+ CLEANFILES = $(DSP) $(VCPROJ)
+ 
+-lib_LTLIBRARIES = libcurl.la
++lib_LTLIBRARIES = libcurl-gnutls.la
+ LIBCURL_LIBS = @LIBCURL_LIBS@
+ 
+ # we use srcdir/include for the static global include files
+@@ -95,12 +95,12 @@
+ VERSIONED_SYMBOLS = -Wl,--version-script=libcurl.vers
+ endif
+ 
+-libcurl_la_LDFLAGS = $(UNDEF) $(VERSION) $(MIMPURE) $(LIBCURL_LIBS) $(VERSIONED_SYMBOLS)
++libcurl_gnutls_la_LDFLAGS = $(UNDEF) $(VERSION) $(MIMPURE) $(LIBCURL_LIBS) $(VERSIONED_SYMBOLS)
+ 
+ # Makefile.inc provides the CSOURCES and HHEADERS defines
+ include Makefile.inc
+ 
+-libcurl_la_SOURCES = $(CSOURCES) $(HHEADERS)
++libcurl_gnutls_la_SOURCES = $(CSOURCES) $(HHEADERS)
+ 
+ WIN32SOURCES = $(CSOURCES)
+ WIN32HEADERS = $(HHEADERS) config-win32.h
+Index: curl/src/Makefile.am
+===================================================================
+--- curl.orig/src/Makefile.am	2008-06-04 19:03:00.000000000 +0200
++++ curl/src/Makefile.am	2008-06-04 19:03:05.000000000 +0200
+@@ -37,8 +37,8 @@
+ 
+ include Makefile.inc
+ 
+-curl_LDADD = ../lib/libcurl.la @CURL_LIBS@
+-curl_DEPENDENCIES = ../lib/libcurl.la
++curl_LDADD = ../lib/libcurl-gnutls.la @CURL_LIBS@
++curl_DEPENDENCIES = ../lib/libcurl-gnutls.la
+ BUILT_SOURCES = hugehelp.c
+ CLEANFILES = hugehelp.c
+ # Use the C locale to ensure that only ASCII characters appear in the
+Index: curl/tests/libtest/Makefile.am
+===================================================================
+--- curl.orig/tests/libtest/Makefile.am	2008-06-04 19:03:00.000000000 +0200
++++ curl/tests/libtest/Makefile.am	2008-06-04 19:03:05.000000000 +0200
+@@ -51,8 +51,8 @@
+   lib544 lib545 lib547 lib548 lib549 lib552 lib553 lib554 lib555 lib556
+ 
+ # Dependencies (may need to be overriden)
+-LDADD = $(LIBDIR)/libcurl.la
+-DEPENDENCIES = $(LIBDIR)/libcurl.la
++LDADD = $(LIBDIR)/libcurl-gnutls.la
++DEPENDENCIES = $(LIBDIR)/libcurl-gnutls.la
+ 
+ 
+ lib500_SOURCES = lib500.c $(SUPPORTFILES)
+Index: curl/docs/examples/Makefile.am
+===================================================================
+--- curl.orig/docs/examples/Makefile.am	2008-06-04 19:03:01.000000000 +0200
++++ curl/docs/examples/Makefile.am	2008-06-04 19:03:05.000000000 +0200
+@@ -19,7 +19,7 @@
+ CPPFLAGS = -DCURL_NO_OLDIES $(STATICCPPFLAGS)
+ 
+ # Dependencies
+-LDADD = $(LIBDIR)/libcurl.la
++LDADD = $(LIBDIR)/libcurl-gnutls.la
+ 
+ # Makefile.inc provides the check_PROGRAMS and COMPLICATED_EXAMPLES defines
+ include Makefile.inc
