@@ -1,3 +1,9 @@
+curl (7.26.0-1maemo1+cssu1) unstable; urgency=high
+
+  * Adopt 7.26.0 for Maemo CSSU
+
+ -- Ludek Finstrle <luf@pzkagis.cz>  Sun, 10 Jun 2012 12:38:54 +0200
+
 curl (7.26.0-1) unstable; urgency=low
 
   * New upstream release

@@ -1,35 +1,23 @@
 Source: curl
 Section: web
 Priority: optional
-Maintainer: Alessandro Ghedini <ghedo@debian.org>
-Uploaders: Ian Jackson <ijackson@chiark.greenend.org.uk>,
- Luk Claes <luk@debian.org>
-Build-Depends: debhelper (>= 9),
+Maintainer: Ludek Finstrle <luf@pzkagis.cz>
+XSBC-Original-Maintainer: Alessandro Ghedini <ghedo@debian.org>
+Build-Depends: debhelper (>> 5.0.41),
  autoconf,
  automake1.9,
  groff-base,
- libgcrypt11-dev,
- libgnutls-dev,
- libidn11-dev,
- libkrb5-dev,
- libldap2-dev,
- libnss3-dev,
- librtmp-dev,
- libssh2-1-dev (>= 1.2),
  libssl-dev,
  libtool,
- openssh-server,
  quilt,
- stunnel4,
  zlib1g-dev
 Build-Conflicts: autoconf2.13, automake1.4
 Standards-Version: 3.9.3
-Vcs-Browser: http://git.debian.org/?p=collab-maint/curl.git
-Vcs-Git: git://git.debian.org/collab-maint/curl.git
 Homepage: http://curl.haxx.se
 
 Package: curl
 Architecture: any
+Section: web
 Replaces: curl-ssl
 Provides: curl-ssl
 Depends: ${shlibs:Depends}, ${misc:Depends},
@@ -52,7 +40,6 @@ Recommends: ca-certificates
 Replaces: libcurl2 (<< 1:7.11.2-2), libcurl4
 Conflicts: libcurl4
 Pre-Depends: ${misc:Pre-Depends}
-Multi-Arch: same
 Description: easy-to-use client-side URL transfer library (OpenSSL flavour)
  libcurl is an easy-to-use client-side URL transfer library, supporting DICT,
  FILE, FTP, FTPS, GOPHER, HTTP, HTTPS, IMAP, IMAPS, LDAP, POP3, POP3S, RTMP,
@@ -69,56 +56,6 @@ Description: easy-to-use client-side URL transfer library (OpenSSL flavour)
  .
  SSL support is provided by OpenSSL.
 
-Package: libcurl3-gnutls
-Architecture: any
-Section: libs
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Recommends: ca-certificates
-Replaces: libcurl4-gnutls
-Conflicts: libcurl4-gnutls
-Pre-Depends: ${misc:Pre-Depends}
-Multi-Arch: same
-Description: easy-to-use client-side URL transfer library (GnuTLS flavour)
- libcurl is an easy-to-use client-side URL transfer library, supporting DICT,
- FILE, FTP, FTPS, GOPHER, HTTP, HTTPS, IMAP, IMAPS, LDAP, POP3, POP3S, RTMP,
- RTSP, SCP, SFTP, SMTP, SMTPS, TELNET and TFTP.
- .
- libcurl supports SSL certificates, HTTP POST, HTTP PUT, FTP uploading, HTTP
- form based upload, proxies, cookies, user+password authentication (Basic,
- Digest, NTLM, Negotiate, Kerberos), file transfer resume, http proxy tunneling
- and more!
- .
- libcurl is free, thread-safe, IPv6 compatible, feature rich, well supported,
- fast, thoroughly documented and is already used by many known, big and
- successful companies and numerous applications.
- .
- SSL support is provided by GnuTLS.
-
-Package: libcurl3-nss
-Architecture: any
-Section: libs
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Recommends: ca-certificates
-Replaces: libcurl4-nss
-Conflicts: libcurl4-nss
-Pre-Depends: ${misc:Pre-Depends}
-Multi-Arch: same
-Description: easy-to-use client-side URL transfer library (NSS flavour)
- libcurl is an easy-to-use client-side URL transfer library, supporting DICT,
- FILE, FTP, FTPS, GOPHER, HTTP, HTTPS, IMAP, IMAPS, LDAP, POP3, POP3S, RTMP,
- RTSP, SCP, SFTP, SMTP, SMTPS, TELNET and TFTP.
- .
- libcurl supports SSL certificates, HTTP POST, HTTP PUT, FTP uploading, HTTP
- form based upload, proxies, cookies, user+password authentication (Basic,
- Digest, NTLM, Negotiate, Kerberos), file transfer resume, http proxy tunneling
- and more!
- .
- libcurl is free, thread-safe, IPv6 compatible, feature rich, well supported,
- fast, thoroughly documented and is already used by many known, big and
- successful companies and numerous applications.
- .
- SSL support is provided by NSS.
-
 Package: libcurl4-openssl-dev
 Architecture: any
 Section: libdevel
@@ -132,16 +69,9 @@ Replaces: libcurl-dev,
  libcurl-ssl-dev,
  libcurl3-openssl-dev,
  libcurl3-dev (<< 7.14.1-1)
-Conflicts: libcurl-dev,
- libcurl4-gnutls-dev,
- libcurl4-nss-dev
 Depends: ${misc:Depends}, libcurl3 (= ${binary:Version}),
  libc6-dev | libc-dev,
  libidn11-dev,
- libkrb5-dev,
- libldap2-dev,
- librtmp-dev,
- libssh2-1-dev,
  libssl-dev,
  zlib1g-dev
 Description: development files and documentation for libcurl (OpenSSL flavour)
@@ -164,93 +94,16 @@ Description: development files and documentation for libcurl (OpenSSL flavour)
  .
  SSL support is provided by OpenSSL.
 
-Package: libcurl4-gnutls-dev
-Architecture: any
+Package: libcurl3-dev
+Architecture: all
 Section: libdevel
-Suggests: libcurl3-dbg
-Provides: libcurl-dev,
- libcurl-ssl-dev,
- libcurl3-gnutls-dev,
- libcurl4-dev
-Replaces: libcurl-dev,
- libcurl-ssl-dev,
- libcurl3-gnutls-dev,
- libcurl4-dev
-Conflicts: libcurl-dev,
- libcurl4-openssl-dev,
- libcurl4-nss-dev
-Depends: ${misc:Depends}, libcurl3-gnutls (= ${binary:Version}),
- libc6-dev | libc-dev,
- libgnutls-dev,
- libidn11-dev,
- libkrb5-dev,
- libldap2-dev,
- librtmp-dev,
- libssh2-1-dev,
- zlib1g-dev
-Description: development files and documentation for libcurl (GnuTLS flavour)
- libcurl is an easy-to-use client-side URL transfer library, supporting DICT,
- FILE, FTP, FTPS, GOPHER, HTTP, HTTPS, IMAP, IMAPS, LDAP, POP3, POP3S, RTMP,
- RTSP, SCP, SFTP, SMTP, SMTPS, TELNET and TFTP.
+Depends: libcurl4-openssl-dev (= ${Source-Version})
+Description: Transitional package to libcurl4-openssl-dev
+ Transitional package depending on libcurl4-openssl-dev.
  .
- libcurl supports SSL certificates, HTTP POST, HTTP PUT, FTP uploading, HTTP
- form based upload, proxies, cookies, user+password authentication (Basic,
- Digest, NTLM, Negotiate, Kerberos), file transfer resume, http proxy tunneling
- and more!
+ Once installed, this package may be safely removed.
  .
- libcurl is free, thread-safe, IPv6 compatible, feature rich, well supported,
- fast, thoroughly documented and is already used by many known, big and
- successful companies and numerous applications.
- .
- This package provides the development files (ie. includes, static library,
- manual pages) that allow to build software which uses libcurl. HTML and PDF
- versions of all the manual pages are also provided.
- .
- SSL support is provided by GnuTLS.
-
-Package: libcurl4-nss-dev
-Architecture: any
-Section: libdevel
-Suggests: libcurl3-dbg
-Provides: libcurl-dev,
- libcurl-ssl-dev,
- libcurl3-nss-dev,
- libcurl4-dev
-Replaces: libcurl-dev,
- libcurl-ssl-dev,
- libcurl3-nss-dev,
- libcurl4-dev
-Conflicts: libcurl-dev,
- libcurl4-openssl-dev,
- libcurl4-gnutls-dev
-Depends: ${misc:Depends}, libcurl3-nss (= ${binary:Version}),
- libc6-dev | libc-dev,
- libidn11-dev,
- libkrb5-dev,
- libldap2-dev,
- libnss3-dev,
- librtmp-dev,
- libssh2-1-dev,
- zlib1g-dev
-Description: development files and documentation for libcurl (NSS flavour)
- libcurl is an easy-to-use client-side URL transfer library, supporting DICT,
- FILE, FTP, FTPS, GOPHER, HTTP, HTTPS, IMAP, IMAPS, LDAP, POP3, POP3S, RTMP,
- RTSP, SCP, SFTP, SMTP, SMTPS, TELNET and TFTP.
- .
- libcurl supports SSL certificates, HTTP POST, HTTP PUT, FTP uploading, HTTP
- form based upload, proxies, cookies, user+password authentication (Basic,
- Digest, NTLM, Negotiate, Kerberos), file transfer resume, http proxy tunneling
- and more!
- .
- libcurl is free, thread-safe, IPv6 compatible, feature rich, well supported,
- fast, thoroughly documented and is already used by many known, big and
- successful companies and numerous applications.
- .
- This package provides the development files (ie. includes, static library,
- manual pages) that allow to build software which uses libcurl. HTML and PDF
- versions of all the manual pages are also provided.
- .
- SSL support is provided by NSS.
+ Homepage: http://curl.haxx.se
 
 Package: libcurl3-dbg
 Architecture: any
@@ -261,7 +114,6 @@ Provides: libcurl4-dbg
 Replaces: libcurl4-dbg
 Conflicts: libcurl4-dbg
 Depends: ${misc:Depends}, libcurl3 (= ${binary:Version}) | libcurl3-gnutls (= ${binary:Version}) | libcurl3-nss (= ${binary:Version})
-Multi-Arch: same
 Description: debugging symbols for libcurl (OpenSSL, GnuTLS and NSS flavours)
  libcurl is an easy-to-use client-side URL transfer library, supporting DICT,
  FILE, FTP, FTPS, GOPHER, HTTP, HTTPS, IMAP, IMAPS, LDAP, POP3, POP3S, RTMP,

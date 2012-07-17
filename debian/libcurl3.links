@@ -1,3 +1,1 @@
-#!/bin/sh
-
-echo usr/lib/$DEB_HOST_MULTIARCH/libcurl.so.4 usr/lib/$DEB_HOST_MULTIARCH/libcurl.so.3
+usr/lib/libcurl.so.4 usr/lib/libcurl.so.3
