@@ -115,7 +115,7 @@ static const char *curlx_usage[]={
 
 */
 
-/* 
+/*
  * We use this ZERO_NULL to avoid picky compiler warnings,
  * when assigning a NULL pointer to a function pointer var.
  */
@@ -239,8 +239,7 @@ static CURLcode sslctxfun(CURL * curl, void * sslctx, void * parm) {
   SSL_CTX_set_cipher_list(ctx,"RC4-MD5");
   SSL_CTX_set_mode(ctx, SSL_MODE_AUTO_RETRY);
 
-  X509_STORE_add_cert(ctx->cert_store,sk_X509_value(p->ca,
-                                                    sk_X509_num(p->ca)-1));
+  X509_STORE_add_cert(SSL_CTX_get_cert_store(ctx), sk_X509_value(p->ca, sk_X509_num(p->ca)-1));
 
   SSL_CTX_set_verify_depth(ctx,2);
 
@@ -281,7 +280,7 @@ int main(int argc, char **argv) {
   struct curl_slist * headers=NULL;
   int badarg=0;
 
-  binaryptr=(char*)malloc(tabLength);
+  binaryptr = malloc(tabLength);
 
   p.verbose = 0;
   p.errorbio = BIO_new_fp (stderr, BIO_NOCLOSE);
@@ -404,7 +403,7 @@ int main(int argc, char **argv) {
   /* determine URL to go */
 
   if (hostporturl) {
-    serverurl=(char*) malloc(9+strlen(hostporturl));
+    serverurl = malloc(9+strlen(hostporturl));
     sprintf(serverurl,"https://%s",hostporturl);
   }
   else if (p.accesstype != 0) { /* see whether we can find an AIA or SIA for a given access type */
@@ -442,7 +441,7 @@ int main(int argc, char **argv) {
 
   /* pass our list of custom made headers */
 
-  contenttype=(char*) malloc(15+strlen(mimetype));
+  contenttype = malloc(15+strlen(mimetype));
   sprintf(contenttype,"Content-type: %s",mimetype);
   headers = curl_slist_append(headers,contenttype);
   curl_easy_setopt(p.curl, CURLOPT_HTTPHEADER, headers);
@@ -453,7 +452,7 @@ int main(int argc, char **argv) {
   {
     FILE *outfp;
     BIO_get_fp(out,&outfp);
-    curl_easy_setopt(p.curl, CURLOPT_FILE,outfp);
+    curl_easy_setopt(p.curl, CURLOPT_WRITEDATA, outfp);
   }
 
   res = curl_easy_setopt(p.curl, CURLOPT_SSL_CTX_FUNCTION, sslctxfun)  ;
@@ -469,7 +468,7 @@ int main(int argc, char **argv) {
       i+=lu;
       if (i== tabLength) {
         tabLength+=100;
-        binaryptr=(char*)realloc(binaryptr,tabLength); /* should be more careful */
+        binaryptr=realloc(binaryptr,tabLength); /* should be more careful */
       }
     }
     tabLength = i;

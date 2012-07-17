@@ -46,8 +46,11 @@ SIMPLE USAGE
   Get a file from an SSH server using SCP using a private key to authenticate:
 
         curl -u username: --key ~/.ssh/id_dsa --pubkey ~/.ssh/id_dsa.pub \
-        	scp://shell.example.com/~/personal.txt
+            scp://shell.example.com/~/personal.txt
 
+  Get the main page from an IPv6 web server:
+
+        curl -g "http://[2001:1890:1112:1::20]/"
 
 DOWNLOAD TO A FILE
 
@@ -86,6 +89,13 @@ USING PASSWORDS
    standards while the recommended "explicit" way is done by using FTP:// and
    the --ftp-ssl option.
 
+ SFTP / SCP
+
+   This is similar to FTP, but you can specify a private key to use instead of
+   a password. Note that the private key may itself be protected by a password
+   that is unrelated to the login password of the remote system.  If you
+   provide a private key file you must also provide a public key file.
+
  HTTP
 
    Curl also supports user and password in HTTP URLs, thus you can pick a file
@@ -113,7 +123,13 @@ USING PASSWORDS
 
 PROXY
 
- Get an ftp file using a proxy named my-proxy that uses port 888:
+ curl supports both HTTP and SOCKS proxy servers, with optional authentication.
+ It does not have special support for FTP proxy servers since there are no
+ standards for those, but it can still be made to work with many of them. You
+ can also use both HTTP and SOCKS proxies to transfer files to and from FTP
+ servers.
+
+ Get an ftp file using an HTTP proxy named my-proxy that uses port 888:
 
         curl -x my-proxy:888 ftp://ftp.leachsite.com/README
 
@@ -126,10 +142,32 @@ PROXY
 
         curl -U user:passwd -x my-proxy:888 http://www.get.this/
 
+ A comma-separated list of hosts and domains which do not use the proxy can
+ be specified as:
+
+        curl --noproxy localhost,get.this -x my-proxy:888 http://www.get.this/
+
+ If the proxy is specified with --proxy1.0 instead of --proxy or -x, then
+ curl will use HTTP/1.0 instead of HTTP/1.1 for any CONNECT attempts.
+
  curl also supports SOCKS4 and SOCKS5 proxies with --socks4 and --socks5.
 
- See also the environment variables Curl support that offer further proxy
+ See also the environment variables Curl supports that offer further proxy
  control.
+
+ Most FTP proxy servers are set up to appear as a normal FTP server from the
+ client's perspective, with special commands to select the remote FTP server.
+ curl supports the -u, -Q and --ftp-account options that can be used to
+ set up transfers through many FTP proxies. For example, a file can be
+ uploaded to a remote FTP server using a Blue Coat FTP proxy with the
+ options:
+
+   curl -u "Remote-FTP-Username@remote.ftp.server Proxy-Username:Remote-Pass" \
+    --ftp-account Proxy-Password --upload-file local-file \
+    ftp://my-ftp.proxy.server:21/remote/upload/path/
+
+ See the manual for your FTP proxy to determine the form it expects to set up
+ transfers, and curl's -v option to see exactly what curl is sending.
 
 RANGES
 
@@ -150,13 +188,13 @@ RANGES
 
   Get the first 100 bytes of a document using FTP:
 
-        curl -r 0-99 ftp://www.get.this/README  
+        curl -r 0-99 ftp://www.get.this/README
 
 UPLOADING
 
- FTP
+ FTP / FTPS / SFTP / SCP
 
-  Upload all data on stdin to a specified ftp site:
+  Upload all data on stdin to a specified server:
 
         curl -T - ftp://ftp.upload.com/myfile
 
@@ -166,10 +204,10 @@ UPLOADING
 
   Upload a local file to the remote site, and use the local file name remote
   too:
- 
+
         curl -T uploadfile -u user:passwd ftp://ftp.upload.com/
 
-  Upload a local file to get appended to the remote file using ftp:
+  Upload a local file to get appended to the remote file:
 
         curl -T localfile -a ftp://ftp.upload.com/remotefile
 
@@ -205,7 +243,7 @@ VERBOSE / DEBUG
   this:
 
         curl --trace trace.txt www.haxx.se
- 
+
 
 DETAILED INFORMATION
 
@@ -290,7 +328,7 @@ POST (HTTP)
   If the content-type is not specified, curl will try to guess from the file
   extension (it only knows a few), or use the previously specified type (from
   an earlier file if several files are specified in a list) or else it will
-  using the default type 'text/plain'.
+  use the default type 'application/octet-stream'.
 
   Emulate a fill-in form with -F. Let's say you fill in three fields in a
   form. One field is a file name which to post, one field is your name and one
@@ -307,12 +345,12 @@ POST (HTTP)
   To send two files in one post you can do it in two ways:
 
   1. Send multiple files in a single "field" with a single field name:
- 
-        curl -F "pictures=@dog.gif,cat.gif" 
- 
-  2. Send two fields with two field names: 
 
-        curl -F "docpicture=@dog.gif" -F "catpicture=@cat.gif" 
+        curl -F "pictures=@dog.gif,cat.gif"
+
+  2. Send two fields with two field names:
+
+        curl -F "docpicture=@dog.gif" -F "catpicture=@cat.gif"
 
   To send a field value literally without interpreting a leading '@'
   or '<', or an embedded ';type=', use --form-string instead of
@@ -331,7 +369,7 @@ REFERRER
 
         curl -e www.coolsite.com http://www.showme.com/
 
-  NOTE: The referer field is defined in the HTTP spec to be a full URL.
+  NOTE: The Referer: [sic] field is defined in the HTTP spec to be a full URL.
 
 USER AGENT
 
@@ -494,9 +532,9 @@ CONFIG FILE
   can also specify the long options without the dashes to make it more
   readable. You can separate the options and the parameter with spaces, or
   with = or :. Comments can be used within the file. If the first letter on a
-  line is a '#'-letter the rest of the line is treated as a comment.
+  line is a '#'-symbol the rest of the line is treated as a comment.
 
-  If you want the parameter to contain spaces, you must inclose the entire
+  If you want the parameter to contain spaces, you must enclose the entire
   parameter within double quotes ("). Within those quotes, you specify a
   quote as \".
 
@@ -564,10 +602,18 @@ FTP and PATH NAMES
 
   (I.e with an extra slash in front of the file name.)
 
+SFTP and SCP and PATH NAMES
+
+  With sftp: and scp: URLs, the path name given is the absolute name on the
+  server. To access a file relative to the remote user's home directory,
+  prefix the file with /~/ , such as:
+
+        curl -u $USER sftp://home.example.com/~/.bashrc
+
 FTP and firewalls
 
   The FTP protocol requires one of the involved parties to open a second
-  connction as soon as data is about to get transfered. There are two ways to
+  connection as soon as data is about to get transfered. There are two ways to
   do this.
 
   The default way for curl is to issue the PASV command which causes the
@@ -652,15 +698,15 @@ HTTPS
   formatted one that curl can use, do something like this (assuming netscape,
   but IE is likely to work similarly):
 
-    You start with hitting the 'security' menu button in netscape. 
+    You start with hitting the 'security' menu button in netscape.
 
-    Select 'certificates->yours' and then pick a certificate in the list 
+    Select 'certificates->yours' and then pick a certificate in the list
 
-    Press the 'export' button 
+    Press the 'export' button
 
-    enter your PIN code for the certs 
+    enter your PIN code for the certs
 
-    select a proper place to save it 
+    select a proper place to save it
 
     Run the 'openssl' application to convert the certificate. If you cd to the
     openssl installation, you can do it like:
@@ -767,7 +813,7 @@ ENVIRONMENT VARIABLES
 
   They should be set for protocol-specific proxies. General proxy should be
   set with
-        
+
         ALL_PROXY
 
   A comma-separated list of host names that shouldn't go through any proxy is
@@ -775,8 +821,9 @@ ENVIRONMENT VARIABLES
 
         NO_PROXY
 
-  If a tail substring of the domain-path for a host matches one of these
-  strings, transactions with that node will not be proxied.
+  If the host name matches one of these strings, or the host is within the
+  domain of one of these strings, transactions with that node will not be
+  proxied.
 
 
   The usage of the -x/--proxy flag overrides the environment variables.
@@ -875,7 +922,8 @@ MULTIPLE TRANSFERS WITH A SINGLE COMMAND LINE
   As is mentioned above, you can download multiple files with one command line
   by simply adding more URLs. If you want those to get saved to a local file
   instead of just printed to stdout, you need to add one save option for each
-  URL you specify. Note that this also goes for the -O option.
+  URL you specify. Note that this also goes for the -O option (but not
+  --remote-name-all).
 
   For example: get two files and use -O for the first and a custom file
   name for the second:
@@ -885,6 +933,28 @@ MULTIPLE TRANSFERS WITH A SINGLE COMMAND LINE
   You can also upload multiple files in a similar fashion:
 
     curl -T local1 ftp://ftp.com/moo.exe -T local2 ftp://ftp.com/moo2.txt
+
+IPv6
+
+  curl will connect to a server with IPv6 when a host lookup returns an IPv6
+  address and fall back to IPv4 if the connection fails. The --ipv4 and --ipv6
+  options can specify which address to use when both are available. IPv6
+  addresses can also be specified directly in URLs using the syntax:
+
+    http://[2001:1890:1112:1::20]/overview.html
+
+  When this style is used, the -g option must be given to stop curl from
+  interpreting the square brackets as special globbing characters.  Link local
+  and site local addresses including a scope identifier, such as fe80::1234%1,
+  may also be used, but the scope portion must be numeric and the percent
+  character must be URL escaped. The previous example in an SFTP URL might
+  look like:
+
+    sftp://[fe80::1234%251]/
+
+  IPv6 addresses provided other than in URLs (e.g. to the --proxy, --interface
+  or --ftp-port options) should not be URL encoded.
+
 
 MAILING LISTS
 

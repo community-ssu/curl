@@ -5,7 +5,7 @@
 #                            | (__| |_| |  _ <| |___
 #                             \___|\___/|_| \_\_____|
 #
-# Copyright (C) 1998 - 2008, Daniel Stenberg, <daniel@haxx.se>, et al.
+# Copyright (C) 1998 - 2011, Daniel Stenberg, <daniel@haxx.se>, et al.
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
@@ -18,18 +18,30 @@
 # This software is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY
 # KIND, either express or implied.
 #
-# $Id: Makefile.am,v 1.62 2008-03-31 03:01:13 danf Exp $
 ###########################################################################
 
 AUTOMAKE_OPTIONS = foreign
 
-EXTRA_DIST = CHANGES COPYING maketgz reconf Makefile.dist curl-config.in \
- curl-style.el sample.emacs RELEASE-NOTES buildconf buildconf.bat libcurl.pc.in
+ACLOCAL_AMFLAGS = -I m4
+
+CMAKE_DIST = CMakeLists.txt CMake/CMakeConfigurableFile.in		\
+CMake/CurlCheckCSourceCompiles.cmake CMake/CurlCheckCSourceRuns.cmake	\
+CMake/CurlTests.c CMake/FindOpenSSL.cmake CMake/FindZLIB.cmake		\
+CMake/OtherTests.cmake CMake/Platforms/WindowsCache.cmake		\
+CMake/Utilities.cmake include/curl/curlbuild.h.cmake
+
+WINBUILD_DIST = winbuild/BUILD.WINDOWS.txt winbuild/gen_resp_file.bat	\
+winbuild/MakefileBuild.vc winbuild/Makefile.vc
+
+EXTRA_DIST = CHANGES COPYING maketgz Makefile.dist curl-config.in	\
+ curl-style.el sample.emacs RELEASE-NOTES buildconf 	\
+ libcurl.pc.in vc6curl.dsw MacOSX-Framework Android.mk $(CMAKE_DIST)	\
+ Makefile.msvc.names $(WINBUILD_DIST) lib/libcurl.vers.in
 
 bin_SCRIPTS = curl-config
 
-SUBDIRS = lib src
-DIST_SUBDIRS = $(SUBDIRS) tests include packages docs
+SUBDIRS = lib src include
+DIST_SUBDIRS = $(SUBDIRS) tests packages docs
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libcurl.pc
@@ -37,7 +49,7 @@ pkgconfig_DATA = libcurl.pc
 dist-hook:
 	rm -rf $(top_builddir)/tests/log
 	find $(distdir) -name "*.dist" -exec rm {} \;
-	(distit=`find $(srcdir) -name "*.dist"`; \
+	(distit=`find $(srcdir) -name "*.dist" | grep -v ./ares/`; \
 	for file in $$distit; do \
 	  strip=`echo $$file | sed -e s/^$(srcdir)// -e s/\.dist//`; \
 	  cp $$file $(distdir)$$strip; \
@@ -74,6 +86,10 @@ endif
 examples:
 	@(cd docs/examples; $(MAKE) check)
 
+clean-local:
+	@(cd tests; $(MAKE) clean)
+	@(cd docs; $(MAKE) clean)
+
 #
 # Build source and binary rpms. For rpm-3.0 and above, the ~/.rpmmacros
 # must contain the following line:
@@ -102,7 +118,7 @@ rpm:
 	mv $$RPM_TOPDIR/SRPMS/$(RPMDIST)-*.src.rpm .
 
 #
-# Build a Solaris pkkgadd format file
+# Build a Solaris pkgadd format file
 # run 'make pkgadd' once you've done './configure' and 'make' to make a Solaris pkgadd format
 # file (which ends up back in this directory).
 # The pkgadd file is in 'pkgtrans' format, so to install on Solaris, do
@@ -135,3 +151,11 @@ uninstall-hook:
 ca-bundle: lib/mk-ca-bundle.pl
 	@echo "generate a fresh ca-bundle.crt"
 	@perl $< -b -l -u lib/ca-bundle.crt
+
+ca-firefox: lib/firefox-db2pem.sh
+	@echo "generate a fresh ca-bundle.crt"
+	./lib/firefox-db2pem.sh lib/ca-bundle.crt
+
+checksrc:
+	cd lib && $(MAKE) checksrc
+	cd src && $(MAKE) checksrc

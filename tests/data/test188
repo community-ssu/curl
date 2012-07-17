@@ -3,8 +3,9 @@
 <keywords>
 HTTP
 HTTP GET
-Range
+Content-Range
 Resume
+followlocation
 </keywords>
 </info>
 

@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2008, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2011, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -18,12 +18,12 @@
  * This software is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY
  * KIND, either express or implied.
  *
- * $Id: os400sys.c,v 1.4 2008-05-20 10:21:50 patrickm Exp $
  *
  ***************************************************************************/
 
 /* OS/400 additional support. */
 
+#include "curlbuild.h"
 #include "config-os400.h"       /* Not setup.h: we only need some defines. */
 
 #include <sys/types.h>
@@ -192,7 +192,7 @@ buffer_threaded(localkey_t key, long size)
 
     /* Allocate buffer descriptors for the current thread. */
 
-    if (!(bufs = (buffer_t *) calloc((size_t) LK_LAST, sizeof *bufs)))
+    if (!(bufs = calloc((size_t) LK_LAST, sizeof *bufs)))
       return (char *) NULL;
 
     if (pthread_setspecific(thdkey, (void *) bufs)) {
@@ -220,7 +220,7 @@ buffer_undef(localkey_t key, long size)
   if (Curl_thread_buffer == buffer_undef) {     /* If unchanged during lock. */
     if (!pthread_key_create(&thdkey, thdbufdestroy))
       Curl_thread_buffer = buffer_threaded;
-    else if (!(locbufs = (buffer_t *) calloc((size_t) LK_LAST,
+    else if (!(locbufs = calloc((size_t) LK_LAST,
                                              sizeof *locbufs))) {
       pthread_mutex_unlock(&mutex);
       return (char *) NULL;
@@ -237,9 +237,9 @@ buffer_undef(localkey_t key, long size)
 
 
 int
-Curl_getnameinfo_a(const struct sockaddr * sa, socklen_t salen,
-              char * nodename, socklen_t nodenamelen,
-              char * servname, socklen_t servnamelen,
+Curl_getnameinfo_a(const struct sockaddr * sa, curl_socklen_t salen,
+              char * nodename, curl_socklen_t nodenamelen,
+              char * servname, curl_socklen_t servnamelen,
               int flags)
 
 {
@@ -337,37 +337,6 @@ Curl_getaddrinfo_a(const char * nodename, const char * servname,
     free(eservname);
 
   return status;
-}
-
-
-int
-Curl_inet_ntoa_r_a(struct in_addr internet_address,
-                   char * output_buffer, int output_buffer_length)
-
-{
-  int rc;
-  int i;
-  char * cp;
-
-  if (!output_buffer || output_buffer_length < 16)
-    return inet_ntoa_r(internet_address, output_buffer, output_buffer_length);
-
-  if (!(cp = malloc(output_buffer_length + 1)))
-    return -1;
-
-  rc = inet_ntoa_r(internet_address, cp, output_buffer_length);
-
-  if (rc) {
-    free(cp);
-    return rc;
-    }
-
-  cp[output_buffer_length - 1] = '\0';
-  i = strlen(cp);
-  QadrtConvertE2A(output_buffer, cp, i, i);
-  output_buffer[i] = '\0';
-  free(cp);
-  return rc;
 }
 
 
@@ -777,7 +746,7 @@ Curl_ldap_search_s_a(void * ld, char * base, int scope, char * filter,
     for (i = 0; attrs[i++];)
       ;
 
-    if (!(eattrs = (char * *) calloc(i, sizeof *eattrs)))
+    if (!(eattrs = calloc(i, sizeof *eattrs)))
       status = LDAP_NO_MEMORY;
     else {
       for (j = 0; attrs[j]; j++) {
@@ -894,6 +863,7 @@ Curl_ldap_get_dn_a(void * ld, LDAPMessage * entry)
     return cp2;
 
   QadrtConvertE2A(cp2, cp, i, i);
+  cp2[i] = '\0';
 
   /* No way to allocate a buffer here, because it will be released by
      ldap_memfree() and ldap_memalloc() does not exist. The solution is to
@@ -925,6 +895,7 @@ Curl_ldap_first_attribute_a(void * ld,
     return cp2;
 
   QadrtConvertE2A(cp2, cp, i, i);
+  cp2[i] = '\0';
 
   /* No way to allocate a buffer here, because it will be released by
      ldap_memfree() and ldap_memalloc() does not exist. The solution is to
@@ -956,6 +927,7 @@ Curl_ldap_next_attribute_a(void * ld,
     return cp2;
 
   QadrtConvertE2A(cp2, cp, i, i);
+  cp2[i] = '\0';
 
   /* No way to allocate a buffer here, because it will be released by
      ldap_memfree() and ldap_memalloc() does not exist. The solution is to

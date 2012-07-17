@@ -1,5 +1,5 @@
-#ifndef LIBCURL_CONFIG_AMIGAOS_H
-#define LIBCURL_CONFIG_AMIGAOS_H
+#ifndef HEADER_CURL_CONFIG_AMIGAOS_H
+#define HEADER_CURL_CONFIG_AMIGAOS_H
 /***************************************************************************
  *                                  _   _ ____  _
  *  Project                     ___| | | |  _ \| |
@@ -7,7 +7,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2007, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2012, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -20,17 +20,22 @@
  * This software is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY
  * KIND, either express or implied.
  *
- * $Id: config-amigaos.h,v 1.12 2007-02-28 14:45:49 yangtse Exp $
  ***************************************************************************/
+
+/* ================================================================ */
+/*               Hand crafted config file for AmigaOS               */
+/* ================================================================ */
 
 #ifdef __AMIGA__ /* Any AmigaOS flavour */
 
 #define HAVE_ARPA_INET_H 1
+#define HAVE_CLOSESOCKET_CAMEL 1
+#define HAVE_ERRNO_H 1
 #define HAVE_GETHOSTBYADDR 1
 #define HAVE_INET_ADDR 1
-#define HAVE_INET_NTOA 1
 #define HAVE_INTTYPES_H 1
-#define HAVE_IOCTLSOCKET_CASE 1
+#define HAVE_IOCTLSOCKET_CAMEL 1
+#define HAVE_IOCTLSOCKET_CAMEL_FIONBIO 1
 #define HAVE_LIBCRYPTO 1
 #define HAVE_LIBSSL 1
 #define HAVE_LIBZ 1
@@ -71,8 +76,6 @@
 #define HAVE_SYS_STAT_H 1
 #define HAVE_SYS_TIME_H 1
 #define HAVE_SYS_TYPES_H 1
-#define HAVE_TERMIOS_H 1
-#define HAVE_TERMIO_H 1
 #define HAVE_TIME_H 1
 #define HAVE_UNAME 1
 #define HAVE_UNISTD_H 1
@@ -84,10 +87,14 @@
 
 #define NEED_MALLOC_H 1
 
+#define SIZEOF_INT 4
+#define SIZEOF_SHORT 2
+#define SIZEOF_SIZE_T 4
+
+#define USE_MANUAL 1
 #define USE_OPENSSL 1
 #define USE_SSLEAY 1
 #define CURL_DISABLE_LDAP 1
-
 
 #define OS "AmigaOS"
 
@@ -103,24 +110,32 @@
 #define SELECT_TYPE_ARG1 int
 #define SELECT_TYPE_ARG234 (fd_set *)
 #define SELECT_TYPE_ARG5 (struct timeval *)
-#define SIZEOF_CURL_OFF_T 4
 
 #define STDC_HEADERS 1
 #define TIME_WITH_SYS_TIME 1
 
 #define in_addr_t int
-#ifndef socklen_t
-# define socklen_t int
+
+#ifndef F_OK
+#  define F_OK 0
 #endif
 
 #ifndef O_RDONLY
-# define O_RDONLY 0x0000
+#  define O_RDONLY 0x0000
+#endif
+
+#ifndef LONG_MAX
+#  define LONG_MAX 0x7fffffffL
+#endif
+
+#ifndef LONG_MIN
+#  define LONG_MIN (-0x7fffffffL-1)
 #endif
 
 #define HAVE_GETNAMEINFO 1
 #define GETNAMEINFO_QUAL_ARG1 const
 #define GETNAMEINFO_TYPE_ARG1 struct sockaddr *
-#define GETNAMEINFO_TYPE_ARG2 socklen_t
+#define GETNAMEINFO_TYPE_ARG2 int
 #define GETNAMEINFO_TYPE_ARG46 size_t
 #define GETNAMEINFO_TYPE_ARG7 int
 
@@ -131,6 +146,15 @@
 #define RECV_TYPE_ARG4 long
 #define RECV_TYPE_RETV long
 
+#define HAVE_RECVFROM 1
+#define RECVFROM_TYPE_ARG1 long
+#define RECVFROM_TYPE_ARG2 char
+#define RECVFROM_TYPE_ARG3 long
+#define RECVFROM_TYPE_ARG4 long
+#define RECVFROM_TYPE_ARG5 struct sockaddr
+#define RECVFROM_TYPE_ARG6 long
+#define RECVFROM_TYPE_RETV long
+
 #define HAVE_SEND 1
 #define SEND_TYPE_ARG1 int
 #define SEND_QUAL_ARG2 const
@@ -140,4 +164,4 @@
 #define SEND_TYPE_RETV int
 
 #endif /* __AMIGA__ */
-#endif /* LIBCURL_CONFIG_AMIGAOS_H */
+#endif /* HEADER_CURL_CONFIG_AMIGAOS_H */

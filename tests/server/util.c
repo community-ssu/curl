@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2008, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2012, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -18,9 +18,8 @@
  * This software is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY
  * KIND, either express or implied.
  *
- * $Id: util.c,v 1.24 2008-04-23 23:55:34 yangtse Exp $
  ***************************************************************************/
-#include "setup.h" /* portability help from the lib directory */
+#include "server_setup.h"
 
 #ifdef HAVE_SIGNAL_H
 #include <signal.h>
@@ -59,19 +58,45 @@
 const struct in6_addr in6addr_any = {{ IN6ADDR_ANY_INIT }};
 #endif
 
-/* someone else must set this properly */
-extern const char *serverlogfile;
+/* This function returns a pointer to STATIC memory. It converts the given
+ * binary lump to a hex formatted string usable for output in logs or
+ * whatever.
+ */
+char *data_to_hex(char *data, size_t len)
+{
+  static char buf[256*3];
+  size_t i;
+  char *optr = buf;
+  char *iptr = data;
+
+  if(len > 255)
+    len = 255;
+
+  for(i=0; i < len; i++) {
+    if((data[i] >= 0x20) && (data[i] < 0x7f))
+      *optr++ = *iptr++;
+    else {
+      sprintf(optr, "%%%02x", *iptr++);
+      optr+=3;
+    }
+  }
+  *optr=0; /* in case no sprintf() was used */
+
+  return buf;
+}
 
 void logmsg(const char *msg, ...)
 {
   va_list ap;
-  char buffer[512]; /* possible overflow if you pass in a huge string */
+  char buffer[2048 + 1];
   FILE *logfp;
   int error;
   struct timeval tv;
   time_t sec;
   struct tm *now;
   char timebuf[20];
+  static time_t epoch_offset;
+  static int    known_offset;
 
   if (!serverlogfile) {
     fprintf(stderr, "Error: serverlogfile not set\n");
@@ -79,17 +104,21 @@ void logmsg(const char *msg, ...)
   }
 
   tv = curlx_tvnow();
-  sec = tv.tv_sec;
-  now = localtime(&sec); /* not multithread safe but we don't care */
+  if(!known_offset) {
+    epoch_offset = time(NULL) - tv.tv_sec;
+    known_offset = 1;
+  }
+  sec = epoch_offset + tv.tv_sec;
+  now = localtime(&sec); /* not thread safe but we don't care */
 
   snprintf(timebuf, sizeof(timebuf), "%02d:%02d:%02d.%06ld",
-           now->tm_hour, now->tm_min, now->tm_sec, tv.tv_usec);
+    (int)now->tm_hour, (int)now->tm_min, (int)now->tm_sec, (long)tv.tv_usec);
 
   va_start(ap, msg);
-  vsprintf(buffer, msg, ap);
+  vsnprintf(buffer, sizeof(buffer), msg, ap);
   va_end(ap);
 
-  logfp = fopen(serverlogfile, "a");
+  logfp = fopen(serverlogfile, "ab");
   if(logfp) {
     fprintf(logfp, "%s %s\n", timebuf, buffer);
     fclose(logfp);
@@ -206,7 +235,7 @@ int wait_ms(int timeout_ms)
     if(r != -1)
       break;
     error = SOCKERRNO;
-    if(error == EINVAL)
+    if(error && (error != EINTR))
       break;
     pending_ms = timeout_ms - (int)curlx_tvdiff(curlx_tvnow(), initial_tv);
     if(pending_ms <= 0)
@@ -224,7 +253,7 @@ int write_pidfile(const char *filename)
   long pid;
 
   pid = (long)getpid();
-  pidfile = fopen(filename, "w");
+  pidfile = fopen(filename, "wb");
   if(!pidfile) {
     logmsg("Couldn't write pid file: %s %s", filename, strerror(ERRNO));
     return 0; /* fail */
@@ -238,7 +267,7 @@ int write_pidfile(const char *filename)
 void set_advisor_read_lock(const char *filename)
 {
   FILE *lockfile;
-  int error;
+  int error = 0;
   int res;
 
   do {
@@ -260,8 +289,14 @@ void set_advisor_read_lock(const char *filename)
 
 void clear_advisor_read_lock(const char *filename)
 {
-  int error;
+  int error = 0;
   int res;
+
+  /*
+  ** Log all removal failures. Even those due to file not existing.
+  ** This allows to detect if unexpectedly the file has already been
+  ** removed by a process different than the one that should do this.
+  */
 
   do {
     res = unlink(filename);

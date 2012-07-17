@@ -18,14 +18,13 @@
 .\" * This software is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY
 .\" * KIND, either express or implied.
 .\" *
-.\" * $Id: runtests.1,v 1.4 2007-10-11 21:15:09 danf Exp $
 .\" **************************************************************************
 .\"
-.TH runtests.pl 1 "11 Oct 2007" "Curl 7.17.1" "runtests"
+.TH runtests.pl 1 "2 Feb 2010" "Curl 7.20.0" "runtests"
 .SH NAME
 runtests.pl \- run one or more test cases
 .SH SYNOPSIS
-.B runtests.pl [options] [test number]
+.B runtests.pl [options] [test number] [!test number] [key word] [!key word]
 .SH DESCRIPTION
 \fIruntests.pl\fP runs one, several or all the existing test cases in curl's
 test suite. It is often called from the root Makefile of the curl package with
@@ -39,7 +38,10 @@ the numbers with a leading exclamation point, like "!66".
 .P
 It is also possible to specify tests to skip based on a key word describing
 the test. These are specified with a leading exclamation point and the
-key word or phrase, like "!HTTP NTLM auth".
+key word or phrase, like "!HTTP NTLM auth".  Likewise, tests to run can
+be specified simply by specifying the unadorned key words, like "FTPS".
+Remember that the exclamation marks and spaces will need to be quoted somehow
+when entered at many command shells.
 .SH OPTIONS
 .IP "-a"
 Continue running the rest of the test cases even if one test fails. By
@@ -70,6 +72,10 @@ Prints out all files in "log/" to stdout when a test case fails. Very
 practical when used in the automated and distributed tests since then the
 people checking the failures and the reasons for them might not have physical
 access to the machine and logs.
+.IP "-r"
+Display run time statistics. (Requires Perl Time::HiRes module)
+.IP "-rf"
+Display full run time statistics. (Requires Perl Time::HiRes module)
 .IP "-s"
 Shorter output. Speaks less than default.
 .IP "-t[num]"
@@ -87,10 +93,14 @@ Many tests have conditions that must be met before the test case can run
 fine. They could depend on built-in features in libcurl or features present in
 the operating system or even in third-party libraries that curl may or may not
 use.
-
-The test script checks this by itself, why it is safe to attempt to run all
-tests. They who cannot be run due to failed requirements, will simply be
-skipped and you'll get a report about it when all test cases have completed.
+.P
+The test script checks most of these by itself to determine when it is
+safe to attempt to run each test.  Those which cannot be run due to
+failed requirements will simply be skipped and listed at the completion
+of all test cases.  In some unusual configurations, the test script
+cannot make the correct determination for all tests.  In these cases,
+the problematic tests can be skipped using the "!keyword" skip feature
+documented earlier.
 .SH "WRITING TESTS"
 The simplest way to write test cases is to start with a similar existing test,
 save it with a new number and then adjust it to fit. There's an attempt to

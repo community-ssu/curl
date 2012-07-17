@@ -45,7 +45,7 @@ ftp
 HTTP Location: redirect to FTP URL
  </name>
  <command>
--k http://%HOSTIP:%HTTPPORT/10280001 -L
+http://%HOSTIP:%HTTPPORT/10280001 -L
 </command>
 # The data section doesn't do variable substitution, so we must assert this
 <precheck>

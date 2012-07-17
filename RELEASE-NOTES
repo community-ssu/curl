@@ -1,68 +1,85 @@
-Curl and libcurl 7.18.2
+Curl and libcurl 7.26.0
 
- Public curl releases:         105
- Command line options:         126
- curl_easy_setopt() options:   150
+ Public curl releases:         127
+ Command line options:         151
+ curl_easy_setopt() options:   199
  Public functions in libcurl:  58
- Public web site mirrors:      37
- Known libcurl bindings:       36
- Contributors:                 636
+ Known libcurl bindings:       39
+ Contributors:                 929
 
 This release includes the following changes:
- 
- o CURLFORM_STREAM was added
- o CURLOPT_NOBODY is now supported over SFTP
- o curl can now run on Symbian OS
- o curl -w redirect_url and CURLINFO_REDIRECT_URL
- o added curl_easy_send() and curl_easy_recv()
+
+ o nss: the minimal supported version of NSS bumped to 3.12.x
+ o nss: human-readable names are now provided for NSS errors if available
+ o add a manual page for mk-ca-bundle
+ o added --post303 and the CURL_REDIR_POST_303 option for CURLOPT_POSTREDIR
+ o smtp: Add support for DIGEST-MD5 authentication
+ o pop3: Added support for additional pop3 commands
 
 This release includes the following bugfixes:
 
- o CURLOPT_NOBODY first set to TRUE and then FALSE for HTTP no longer causes
-   the confusion that could lead to a hung transfer
- o curl_easy_reset() resets the max redirect limit properly
- o configure now correctly recognizes Heimdal and MIT gssapi libraries
- o malloc() failure check in Negotiate
- o -i and -I together now work the same no matter what order they're used
- o the typechecker can be bypassed by defining CURL_DISABLE_TYPECHECK
- o a pointer mixup could make the FTP code send bad user+password under rare
-   circumstances (found when using curlftpfs)
- o CURLOPT_OPENSOCKETFUNCTION can now be used to create a unix domain socket
- o CURLOPT_TCP_NODELAY crash due to getprotobyname() use
- o libcurl sometimes sent body twice when using CURLAUTH_ANY
- o configure detecting debug-enabled c-ares
- o microsecond resolution keys for internal splay trees
- o krb4 and krb5 ftp segfault
- o multi interface busy loop for CONNECT requests
- o internal time differences now use monotonic time source if available
- o several curl_multi_socket() fixes
- o builds fine for Haiku OS
- o follow redirect with only a new query string
- o SCP and SFTP memory leaks on aborted transfers
- o curl_multi_socket() and HTTP pipelining transfer stalls
- o lost telnet data on an EWOULDBLOCK condition
+ o nss: libcurl now uses NSS_InitContext() to prevent collisions if available
+   [1]
+ o URL parse: reject numerical IPv6 addresses outside brackets [4]
+ o MD5: fix OOM memory leak [5]
+ o OpenSSL cert: provide more details when cert check fails
+ o HTTP: empty chunked POST ended up in two zero size chunks [6]
+ o fixed a regression when curl resolved to multiple addresses and the first
+   isn't supported [7]
+ o -# progress meter: avoid superfluous updates and duplicate lines [8]
+ o headers: surround GCC attribute names with double underscores [9]
+ o PolarSSL: correct return code for CRL matches
+ o PolarSSL: include version number in version string
+ o PolarSSL: add support for asynchronous connect
+ o mk-ca-bundle: revert the LWP usage [12]
+ o IPv6 cookie domain: get rid of the first bracket before the second
+ o connect.c: return changed to CURLE_COULDNT_CONNECT when opensocket fails
+ o OpenSSL: Made cert hostname check conform to RFC 6125 [10]
+ o HTTP: reset expected DL/UL sizes on redirects [11]
+ o CMake: fix Windows LDAP/LDAPS option handling [2]
+ o CMake: fix MS Visual Studio x64 unsigned long long literal suffix [3]
+ o configure: update detection logic of getaddrinfo() thread-safeness
+ o configure: check for gethostbyname in the watt lib
+ o curl-config.1: fix curl-config usage in example [13]
+ o smtp: Fixed non-escaping of dot character at beginning of line
+ o MakefileBuild.vc: use the correct IDN variable
+ o autoconf: improve handling of versioned symbols
+ o curl.1: clarify -x usage
+ o curl: shorten user-agent
+ o smtp: issue with the multi-interface always sending postdata [14]
+ o compile error with GnuTLS+Nettle fixed
+ o winbuild: fix IPv6 enabled build
 
 This release includes the following known bugs:
 
  o see docs/KNOWN_BUGS (http://curl.haxx.se/docs/knownbugs.html)
 
-Other curl-related news:
-
- o pycurl 7.18.1 was released: http://pycurl.sf.net/
- o brand new curl Haskell binding:
-   http://hackage.haskell.org/cgi-bin/hackage-scripts/package/curl
-
-New curl mirrors:
-
- o 
-
 This release would not have looked like this without help, code, reports and
 advice from friends like these:
 
- Michal Marek, Daniel Fandrich, Scott Barrett, Alexey Simak, Daniel Black,
- Rafa Muyo, Andre Guibert de Bruet, Brock Noland, Sandor Feldi, Stefan Krause,
- David Shaw, Norbert Frese, Bart Whiteley, Jean-Francois Bertrand, Ben Van Hof,
- Yuriy Sosov, Christopher Palow, Yang Tse, Liam Healy, Nikolai Kondrashov,
- David Rosenstrauch, Andreas Faerber, Scott McCreary, Jeff Weber, Emil Romanus
+ Andrei Cipu, Armel Asselin, Benjamin Johnson, Dag Ekengren, Dave Reisner,
+ Gokhan Sengun, Guenter Knauf, Jan Schaumann, Jonathan Nieder, Kamil Dudka,
+ Lijo Antony, Olaf Flebbe, Rodrigo Silva, Steve Holme, Tatsuhiro Tsujikawa,
+ Tim Heckman, Yang Tse, Arnaud Compan, Blaise Potard, Daniel Theron,
+ Michael Mueller, Michael Wallner, Tim Heckman, Roman Mamedov, Julian Taylor,
+ Claes Jakobsson, Pierre Chapuis, Jan Ehrhardt
 
         Thanks! (and sorry if I forgot to mention someone)
+
+References to bug reports and discussions on issues:
+
+ [1] = https://bugzilla.redhat.com/738456
+ [2] = http://curl.haxx.se/mail/lib-2012-03/0278.html
+ [3] = http://curl.haxx.se/mail/lib-2012-03/0255.html
+ [4] = http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=670126
+ [5] = http://curl.haxx.se/mail/lib-2012-04/0246.html
+ [6] = http://curl.haxx.se/mail/archive-2012-04/0060.html
+ [7] = http://curl.haxx.se/bug/view.cgi?id=3516508
+ [8] = http://curl.haxx.se/bug/view.cgi?id=3517418
+ [9] = http://curl.haxx.se/mail/lib-2012-04/0127.html
+ [10] = http://tools.ietf.org/html/rfc6125#section-6.4.3
+ [11] = http://curl.haxx.se/bug/view.cgi?id=3510057
+ [12] = http://curl.haxx.se/mail/lib-2012-03/0238.html
+ [13] = http://curl.haxx.se/bug/view.cgi?id=3528241
+ [14] = http://curl.haxx.se/mail/lib-2012-05/0108.html
+ 

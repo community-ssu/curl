@@ -18,10 +18,10 @@
  * This software is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY
  * KIND, either express or implied.
  *
- * $Id: strdup.c,v 1.5 2008-02-06 19:01:13 yangtse Exp $
  ***************************************************************************/
 
 #include "setup.h"
+
 #include "strdup.h"
 
 #ifndef HAVE_STRDUP
@@ -38,7 +38,7 @@ char *curlx_strdup(const char *str)
   if(len >= ((size_t)-1) / sizeof(char))
     return (char *)NULL;
 
-  newstr = (char *) malloc((len+1)*sizeof(char));
+  newstr = malloc((len+1)*sizeof(char));
   if(!newstr)
     return (char *)NULL;
 

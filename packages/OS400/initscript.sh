@@ -1,6 +1,5 @@
 #!/bin/sh
 
-# $Id: initscript.sh,v 1.5 2008-05-20 10:21:50 patrickm Exp $
 
 case "${SCRIPTDIR}" in
 /*)     ;;
@@ -22,7 +21,7 @@ export SCRIPTDIR TOPDIR
 
 #  Extract the SONAME from the library makefile.
 
-SONAME=`sed -e '/^VERSION=/!d' -e 's/^.* \([0-9]*\):.*$/\1/'           \
+SONAME=`sed -e '/^VERSIONINFO=/!d' -e 's/^.* \([0-9]*\):.*$/\1/' -e 'q' \
                                                 < "${TOPDIR}/lib/Makefile.am"`
 export SONAME
 
@@ -41,7 +40,7 @@ TGTCCSID='500'                  # Target CCSID of objects
 DEBUG='*ALL'                    # Debug level
 OPTIMIZE='10'                   # Optimisation level
 OUTPUT='*NONE'                  # Compilation output option.
-TGTRLS='V5R2M0'                 # Target OS release
+TGTRLS='V5R3M0'                 # Target OS release
 
 export TARGETLIB STATBNDDIR DYNBNDDIR SRVPGM TGTCCSID DEBUG OPTIMIZE OUTPUT
 export TGTRLS
@@ -156,8 +155,12 @@ db2_name()
 
 {
         basename "${1}"                                                 |
-        tr '[a-z-]' '[A-Z_]'                                              |
+        tr 'a-z-' 'A-Z_'                                                |
         sed -e 's/\..*//'                                               \
+            -e 's/\([^_]\)[^_]*_\(.*\)/\1\2/'                                \
+            -e 's/\([^_]\)\([^_]\)[^_]*_\(.*\)/\1\2\3/'                      \
+            -e 's/\([^_]\)\([^_]\)\([^_]\)[^_]*_\(.*\)/\1\2\3\4/'            \
+            -e 's/\([^_]\)\([^_]\)\([^_]\)\([^_]\)[^_]*_\(.*\)/\1\2\3\4\5/'  \
             -e 's/^\(..........\).*/\1/'
 }
 

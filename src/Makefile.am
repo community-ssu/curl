@@ -5,7 +5,7 @@
 #                            | (__| |_| |  _ <| |___
 #                             \___|\___/|_| \_\_____|
 #
-# Copyright (C) 1998 - 2005, Daniel Stenberg, <daniel@haxx.se>, et al.
+# Copyright (C) 1998 - 2012, Daniel Stenberg, <daniel@haxx.se>, et al.
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
@@ -18,27 +18,44 @@
 # This software is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY
 # KIND, either express or implied.
 #
-# $Id: Makefile.am,v 1.56 2007-12-19 21:19:01 danf Exp $
 ###########################################################################
 AUTOMAKE_OPTIONS = foreign nostdinc
 
-# we use srcdir/src for "private" includes
-# we use srcdir/include for the static global include files
-# we use builddir/src for the generated include files to get found
-# we use srcdir/lib for the header files we "borrow" from the lib
+# Specify our include paths here, and do it relative to $(top_srcdir) and
+# $(top_builddir), to ensure that these paths which belong to the library
+# being currently built and tested are searched before the library which
+# might possibly already be installed in the system.
+#
+# $(top_builddir)/include/curl for generated curlbuild.h included from curl.h
+# $(top_builddir)/include for generated curlbuild.h included from lib/setup.h
+# $(top_srcdir)/include is for libcurl's external include files
+# $(top_builddir)/lib is for libcurl's generated lib/curl_config.h file
+# $(top_builddir)/src is for curl's generated src/curl_config.h file
+# $(top_srcdir)/lib is for libcurl's lib/setup.h and other "borrowed" files
+# $(top_srcdir)/src is for curl's src/tool_setup.h and "curl-private" files
 
-INCLUDES = -I$(top_srcdir)/include \
-           -I$(top_builddir)/lib   \
-           -I$(top_builddir)/src   \
-           -I$(top_srcdir)/lib     \
+INCLUDES = -I$(top_builddir)/include/curl \
+           -I$(top_builddir)/include      \
+           -I$(top_srcdir)/include        \
+           -I$(top_builddir)/lib          \
+           -I$(top_builddir)/src          \
+           -I$(top_srcdir)/lib            \
            -I$(top_srcdir)/src
 
 bin_PROGRAMS = curl
 
+# Mostly for Windows build targets, when using static libcurl
+if USE_CPPFLAG_CURL_STATICLIB
+AM_CPPFLAGS = -DCURL_STATICLIB
+endif
+
 include Makefile.inc
 
-curl_LDADD = ../lib/libcurl.la @CURL_LIBS@
-curl_DEPENDENCIES = ../lib/libcurl.la
+# This might hold -Werror
+CFLAGS += @CURL_CFLAG_EXTRAS@
+
+curl_LDADD = $(top_builddir)/lib/libcurl.la @CURL_LIBS@
+curl_DEPENDENCIES = $(top_builddir)/lib/libcurl.la
 BUILT_SOURCES = hugehelp.c
 CLEANFILES = hugehelp.c
 # Use the C locale to ensure that only ASCII characters appear in the
@@ -46,10 +63,11 @@ CLEANFILES = hugehelp.c
 NROFF=env LC_ALL=C @NROFF@ @MANOPT@ # figured out by the configure script
 
 EXTRA_DIST = mkhelp.pl makefile.dj Makefile.vc6 Makefile.b32 Makefile.m32 \
-	Makefile.riscos config.h.in macos/curl.mcp.xml.sit.hqx		  \
-	macos/MACINSTALL.TXT macos/src/curl_GUSIConfig.cpp		  \
-	macos/src/macos_main.cpp config-amigaos.h makefile.amiga curl.rc  \
-	Makefile.netware Makefile.inc Makefile.Watcom
+	macos/curl.mcp.xml.sit.hqx                                        \
+	macos/MACINSTALL.TXT macos/src/curl_GUSIConfig.cpp vc6curlsrc.dsp \
+	macos/src/macos_main.cpp makefile.amiga curl.rc                   \
+	Makefile.netware Makefile.inc Makefile.Watcom vc6curlsrc.dsw      \
+	CMakeLists.txt
 
 MANPAGE=$(top_srcdir)/docs/curl.1
 README=$(top_srcdir)/docs/MANUAL
@@ -62,7 +80,7 @@ if USE_MANUAL
 if HAVE_LIBZ
 # This generates the hugehelp.c file in both uncompressed and compressed formats
 $(HUGE): $(README) $(MANPAGE)  mkhelp.pl
-	echo '#include "setup.h"' > $(HUGE)
+	echo '#include "tool_setup.h"' > $(HUGE)
 	echo '#ifndef HAVE_LIBZ' >> $(HUGE)
 	$(NROFF) $(MANPAGE) | $(PERL) $(MKHELP) $(README) >> $(HUGE)
 	echo '#else' >> $(HUGE)
@@ -71,7 +89,7 @@ $(HUGE): $(README) $(MANPAGE)  mkhelp.pl
 else # HAVE_LIBZ
 # This generates the hugehelp.c file uncompressed only
 $(HUGE): $(README) $(MANPAGE)  mkhelp.pl
-	echo '#include "setup.h"' > $(HUGE)
+	echo '#include "tool_setup.h"' > $(HUGE)
 	$(NROFF) $(MANPAGE) | $(PERL) $(MKHELP) $(README) >> $(HUGE)
 endif
 
@@ -81,4 +99,14 @@ $(HUGE):
 	echo "/* built-in manual is disabled, blank function */" > $(HUGE)
 	echo '#include "hugehelp.h"' >> $(HUGE)
 	echo "void hugehelp(void) {}" >>$(HUGE)
+endif
+
+# ignore hugehelp.c since it is generated source code and it plays by slightly
+# different rules!
+checksrc:
+	@@PERL@ $(top_srcdir)/lib/checksrc.pl -D$(top_srcdir)/src -Whugehelp.c $(curl_SOURCES)
+
+if CURLDEBUG
+# for debug builds, we scan the sources on all regular make invokes
+all-local: checksrc
 endif
