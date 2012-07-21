@@ -99,10 +99,13 @@ clean:
 install: build-stamp
 	dh_testdir
 	dh_testroot
-	dh_prep
+	#dh_prep
+	dh_clean -k
 	${MAKE} -C debian/build DESTDIR=$(shell pwd)/debian/tmp install
 	dh_install --sourcedir=debian/tmp
-	dh_lintian
+	#dh_lintian
+	mkdir -p debian/libcurl3/usr/share/lintian/overrides
+	install -m 644 debian/libcurl3.lintian-overrides debian/libcurl3/usr/share/lintian/overrides/libcurl3
 	sed -i "/dependency_libs/ s/'.*'/''/" `find . -name '*.la'`
 
 # Build architecture-independent files here.
