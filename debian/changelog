@@ -1,3 +1,10 @@
+curl (7.26.0-1maemo1+0cssu1) unstable; urgency=high
+
+  * Fix CSSU version info
+  * Fix debian/rules for debhelper 5 (merlin1991)
+
+ -- Ludek Finstrle <luf@pzkagis.cz>  Wed,  1 Aug 2012 10:06:24 +0200
+
 curl (7.26.0-1maemo1+cssu1) unstable; urgency=high
 
   * Adopt 7.26.0 for Maemo CSSU
