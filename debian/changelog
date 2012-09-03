@@ -1,3 +1,9 @@
+curl (7.26.0-1maemo1+0cssu1-thumb0) unstable; urgency=high
+
+  * thumb2 build
+
+ -- Ivaylo Dimitrov <freemangordon@abv.bg>  Mon,  3 Sep 2012 19:49:43 +0300
+
 curl (7.26.0-1maemo1+0cssu1) unstable; urgency=high
 
   * Fix CSSU version info
@@ -356,7 +362,7 @@ curl (7.18.2-8maemo6+0m5+0cssu0) unstable; urgency=low
 
 curl (7.18.2-8maemo6+0m5+0cssu0) unstable; urgency=low
 
-  * Fixed #12554: CVE-2010-0734: data callback vulnerability 
+  * Fixed #12554: CVE-2010-0734: data callback vulnerability
     see http://curl.haxx.se/docs/adv_20100209.html
 
  -- Christian Ratzenhofer <christian_ratzenhofer@yahoo.de>  Fri,  4 May 2012 21:45:47 +0200
@@ -389,14 +395,14 @@ curl (7.18.2-8maemo5) unstable; urgency=low
 
 curl (7.18.2-8maemo4) unstable; urgency=low
 
-  * Fixes: NB#104050 libcurl should be compiled with c-ares async DNS 
+  * Fixes: NB#104050 libcurl should be compiled with c-ares async DNS
     support
 
  -- Aapo Makela <aapo.makela@nokia.com>  Fri,  3 Apr 2009 19:32:49 +0300
 
 curl (7.18.2-8maemo3) unstable; urgency=low
 
-  * Fixes: NB#106644 https disabled in libcurl - apt fails to get update 
+  * Fixes: NB#106644 https disabled in libcurl - apt fails to get update
     on https repositories
 
  -- Aapo Makela <aapo.makela@nokia.com>  Thu, 19 Mar 2009 14:04:41 +0200
@@ -417,7 +423,7 @@ curl (7.18.2-8maemo1) unstable; urgency=low
 
 curl (7.18.2-8) unstable; urgency=low
 
-  * Fix "Please add support for ldap/ldaps protocols" 
+  * Fix "Please add support for ldap/ldaps protocols"
     by changing the linker option for liblber (Closes: #506096)
 
  -- Andreas Schuldei <andreas@debian.org>  Fri, 26 Dec 2008 23:48:19 +0100
@@ -437,7 +443,7 @@ curl (7.18.2-6) unstable; urgency=low
 curl (7.18.2-5) unstable; urgency=low
 
   * /usr/lib/pkgconfig/libcurl.pc: "pkg-config --libs libcurl" returns
-    "-Wl, -z, defs" (Closes: #488701), closing same bug again for 
+    "-Wl, -z, defs" (Closes: #488701), closing same bug again for
     curl-config --libs  command
 
  -- Andreas Schuldei <andreas@jesaja.schuldei.org>  Wed, 02 Jul 2008 11:24:40 +0200
@@ -461,8 +467,8 @@ curl (7.18.2-2) unstable; urgency=medium
     from being linked to other libs linking to curl.
   * fixing miss-linking problem by specifying liblber as a configure argument
   * disabling c-ares again for stability reasons
-  * correcting libgssapi linking in configure.ac (patch no_com_err)	
-	
+  * correcting libgssapi linking in configure.ac (patch no_com_err)
+
  -- Andreas Schuldei <andreas@debian.org>  Fri, 27 Jun 2008 03:40:18 +0200
 
 curl (7.18.2-1e1) experimental; urgency=low
@@ -475,7 +481,7 @@ curl (7.18.2-1) unstable; urgency=low
 
   * New upstream release:
     - removed patches/ftp-response, it is already in the upstream release
-    - fixed issues with kerberos ftp (closes: #478864). 
+    - fixed issues with kerberos ftp (closes: #478864).
   * Disable c-ares support, it is still not ready for Debian's wide
     user base (closes: #478864, #481189).
   * Standards-Version bumped to 3.8.0:
@@ -596,7 +602,7 @@ curl (7.16.2-3) unstable; urgency=low
 
 curl (7.16.2-2) experimental; urgency=low
 
-  * Improved package descriptions (closes: #410472). 
+  * Improved package descriptions (closes: #410472).
   * Updated package Provides to ease the soname transition.
 
  -- Domenico Andreoli <cavok@debian.org>  Fri, 27 Apr 2007 15:37:44 +0200
@@ -632,7 +638,7 @@ curl (7.16.0-1) experimental; urgency=low
   * Bumped shlibs version to 7.16.0-1.
   * libcurl4 and libcurl4-gnutls now only recommend ca-certificates
     (closes: #404103).
-  * pkg-config .pc file now uses Libs.private (closes: #405226). 
+  * pkg-config .pc file now uses Libs.private (closes: #405226).
 
  -- Domenico Andreoli <cavok@debian.org>  Fri, 26 Jan 2007 14:26:55 +0100
 
@@ -1003,7 +1009,7 @@ curl (7.12.0.rel-4) unstable; urgency=low
 
 curl (7.12.0.rel-3) unstable; urgency=low
 
-  * Enabled curl's built-in manual. 
+  * Enabled curl's built-in manual.
   * configure script for 7.11.2 is now managed correctly.
 
  -- Domenico Andreoli <cavok@debian.org>  Sun, 18 Jul 2004 22:25:00 +0200
@@ -1036,7 +1042,7 @@ curl (7.12.0-1) unstable; urgency=low
   * New upstream release:
     - fixed minor man page problem (closes: #232928)
     - improved --create-dirs description in curl man page (closes: #251351)
-  * Enabled support for libidn. 
+  * Enabled support for libidn.
 
  -- Domenico Andreoli <cavok@debian.org>  Wed,  2 Jun 2004 18:06:05 +0200
 
@@ -1057,7 +1063,7 @@ curl (7.11.2-1) unstable; urgency=low
 
 curl (7.11.1-2) unstable; urgency=low
 
-  * Added GSSAPI support to package libcurl2-gssapi (closes: #241553). 
+  * Added GSSAPI support to package libcurl2-gssapi (closes: #241553).
 
  -- Domenico Andreoli <cavok@debian.org>  Fri,  2 Apr 2004 18:03:15 +0200
 
@@ -1092,7 +1098,7 @@ curl (7.11.0-2) unstable; urgency=low
 
 curl (7.11.0-1) unstable; urgency=low
 
-  * New upstream release. 
+  * New upstream release.
 
  -- Domenico Andreoli <cavok@debian.org>  Sun, 25 Jan 2004 17:50:43 +0100
 
@@ -1153,7 +1159,7 @@ curl (7.10.6-1) unstable; urgency=low
   * New upstream release:
     - added spport for http_proxy env var with name:passwd
       (closes: #193630).
-  * make test is invoked after build 
+  * make test is invoked after build
 
  -- Domenico Andreoli <cavok@debian.org>  Tue, 29 Jul 2003 01:26:50 +0200
 
@@ -1172,7 +1178,7 @@ curl (7.10.4-1) unstable; urgency=low
     - now uses new settings properly when re-using an existing connection
       (closes: #185254)
     - curl man page now refers to MANUAL (closes: #178509).
-  * Changed section of libcurl2-dev and libcurl2-dbg to libdevel. 
+  * Changed section of libcurl2-dev and libcurl2-dbg to libdevel.
 
  -- Domenico Andreoli <cavok@debian.org>  Wed,  2 Apr 2003 21:25:24 +0200
 
@@ -1220,7 +1226,7 @@ curl (7.10.2-1) unstable; urgency=low
 
 curl (7.10.1-1) unstable; urgency=low
 
-  * New upstream release. 
+  * New upstream release.
 
  -- Domenico Andreoli <cavok@debian.org>  Fri, 11 Oct 2002 23:26:50 +0200
 
@@ -1257,7 +1263,7 @@ curl (7.9.7-2) unstable; urgency=low
 
 curl (7.9.7-1) unstable; urgency=low
 
-  * New upstream release. 
+  * New upstream release.
 
  -- Domenico Andreoli <cavok@debian.org>  Wed, 15 May 2002 21:09:19 +0200
 
@@ -1361,7 +1367,7 @@ curl (7.8-2) unstable; urgency=low
 
 curl (7.8-1) unstable; urgency=low
 
-  * New upstream release. 
+  * New upstream release.
   * Applied patch for correct shared library versioning of libcurl, curl
     7.8 comes with broken shared library version out of the box.
     Patch provided by upstream developer.
@@ -1383,7 +1389,7 @@ curl (7.7.3-2) unstable; urgency=low
 
 curl (7.7.3-1) unstable; urgency=low
 
-  * New upstream release. 
+  * New upstream release.
   * Using dh_installman instead dh_installmanpages.
   * Installing libcurl examples with dh_installexamples.
   * Policy 3.5.3.0 compliant.
@@ -1392,26 +1398,26 @@ curl (7.7.3-1) unstable; urgency=low
 
 curl (7.7.2-1) unstable; urgency=low
 
-  * New upstream release. 
+  * New upstream release.
 
  -- Domenico Andreoli <cavok@debian.org>  Tue, 24 Apr 2001 09:14:51 +0200
 
 curl (7.7.1-2) unstable; urgency=low
 
-  * Fixed debian/rules (closes: #78232, #93837). 
+  * Fixed debian/rules (closes: #78232, #93837).
 
  -- Domenico Andreoli <cavok@debian.org>  Tue, 17 Apr 2001 17:12:19 +0200
 
 curl (7.7.1-1) unstable; urgency=low
 
-  * New upstream release. 
+  * New upstream release.
 
  -- Domenico Andreoli <cavok@debian.org>  Tue, 10 Apr 2001 13:26:09 +0200
 
 curl (7.7-1) unstable; urgency=low
 
   * New upstream release.
-  * Fixed formatting errors in curl.1 (closes: #90281). 
+  * Fixed formatting errors in curl.1 (closes: #90281).
 
  -- Domenico Andreoli <cavok@debian.org>  Fri, 23 Mar 2001 18:25:26 +0100
 
@@ -1444,7 +1450,7 @@ curl (7.6.1-2) unstable; urgency=low
 
 curl (7.6.1-1) unstable; urgency=low
 
-  * New upstream release. 
+  * New upstream release.
 
  -- Domenico Andreoli <cavok@libero.it>  Tue, 13 Feb 2001 18:04:04 +0100
 
@@ -1477,7 +1483,7 @@ curl (7.5.2-1) unstable; urgency=low
 
 curl (7.5-1) unstable; urgency=low
 
-  * New upstream release. 
+  * New upstream release.
 
  -- Domenico Andreoli <cavok@libero.it>  Mon,  4 Dec 2000 13:15:33 +0100
 
@@ -1497,13 +1503,13 @@ curl (7.4.2-2) unstable; urgency=low
 
 curl (7.4.2-1) unstable; urgency=low
 
-  * New upstream release. 
+  * New upstream release.
 
  -- Domenico Andreoli <cavok@libero.it>  Fri, 17 Nov 2000 16:19:23 +0100
 
 curl (7.2.1-1) unstable; urgency=low
 
-  * New upstream release. 
+  * New upstream release.
 
  -- Domenico Andreoli <cavok@libero.it>  Mon,  4 Sep 2000 01:22:44 +0200
 

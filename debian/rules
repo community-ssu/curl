@@ -32,7 +32,12 @@ DO_TEST=no
 SHLIBS_VERSION=7.16.2-1
 
 CFLAGS   = -O2 -Wall
-CXXLAGS  = -O2 -Wall
+CCXXFLAGS  = -O2 -Wall
+
+ifneq (,$(findstring thumb,$(DEB_BUILD_OPTIONS)))
+        CFLAGS += -mthumb
+        CXXFLAGS += -mthumb
+endif
 
 # this will avoid unneded dependencies
 LDFLAGS  = -Wl,--as-needed
