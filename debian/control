@@ -35,7 +35,7 @@ Description: command line tool for transferring data with URL syntax
 Package: libcurl3
 Architecture: any
 Section: libs
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, kernel-feature-errata-430973-workaround [armel]
 Recommends: ca-certificates
 Replaces: libcurl2 (<< 1:7.11.2-2), libcurl4
 Conflicts: libcurl4
