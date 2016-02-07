@@ -2,6 +2,24 @@
 02_art_http_scripting.patch
 03_keep_symbols_compat.patch
 04_workaround_as_needed_bug.patch
+05_curl-sasl-CVE-2013-0249.patch
+06_curl-tailmatch-CVE-2013-1944.patch
+07_test1218-another-cookie-tailmatch-test.patch
+08_CVE-2013-2174.patch
+09_reset-timecond.patch
+10_CVE-2013-4545.patch
+11_disable-verifyhost-with-insecure.patch
+12_CVE-2013-6422.patch
+13_CVE-2014-0015.patch
+14_CVE-2014-0138.patch
+15_CVE-2014-0139.patch
+16_CVE-2014-3613.patch
+17_CVE-2014-3620.patch
+18_CVE-2014-3707.patch
+19_CVE-2014-8150.patch
+20_CVE-2015-3143.patch
+21_CVE-2015-3148-1.patch
+22_CVE-2015-3148-2.patch
 
 90_gnutls.patch
 99_nss.patch
