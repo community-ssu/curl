@@ -20,6 +20,10 @@
 20_CVE-2015-3143.patch
 21_CVE-2015-3148-1.patch
 22_CVE-2015-3148-2.patch
+# wheezy 14
+CVE-2016-5419.patch
+CVE-2016-5420.patch
 
+# Patches at the end
 90_gnutls.patch
 99_nss.patch
