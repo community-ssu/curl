@@ -23,6 +23,8 @@
 # wheezy 14
 CVE-2016-5419.patch
 CVE-2016-5420.patch
+# wheezy 15
+CVE-2016-7141.patch
 
 # Patches at the end
 90_gnutls.patch
