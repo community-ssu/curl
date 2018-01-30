@@ -47,6 +47,8 @@ CVE-2017-7407.patch
 CVE-2017-1000100.patch
 # wheezy 21
 CVE-2017-1000254.patch
+# wheezy 22
+CVE-2017-1000257.patch
 
 # Patches at the end
 90_gnutls.patch
