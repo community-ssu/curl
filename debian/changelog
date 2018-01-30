@@ -1,3 +1,27 @@
+curl (7.26.0-1maemo1+0cssu4) unstable; urgency=high
+
+  * CVE-2018-1000007
+    libcurl might leak authentication data to third parties
+  * CVE-2017-8817
+    fix FTP wildcard out of bounds read
+    https://curl.haxx.se/docs/adv_2017-ae72.html
+  * CVE-2017-1000257
+    Out of bounds read during IMAP FETCH response
+  * CVE-2017-1000254: Prevent an out-of-bounds read in FTP "PWD" response
+    parsing. A malicious server could abuse this effectively prevent curl
+    based clients to interact with it. See
+    <https://curl.haxx.se/docs/adv_20171004.html> for more details.
+    (Closes: #877671)
+  * CVE-2017-1000100
+    Wrong handling of very long filenames during TFTP might result in
+    curl sending more than buffer size.
+  * CVE-2017-7407: Fix a buffer read overrun in --write-out; if a % ended the
+    statement the string's trailing NUL would be skipped and memory past the
+    end of the buffer could be accessed and potentially displayed as part of
+    the output.
+
+ -- Ludek Finstrle <luf@seznam.cz>  Tue, 30 Jan 2018 15:57:55 +0100
+
 curl (7.26.0-1maemo1+0cssu3) unstable; urgency=high
 
   * Fix CVE-2016-5419: TLS session resumption client cert bypass.
