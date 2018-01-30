@@ -41,6 +41,8 @@ CVE-2016-8624.patch
 #don't change behaviour in Maemo: CVE-2016-8625.patch
 # wheezy 18
 CVE-2016-9586.patch
+# wheezy 19
+CVE-2017-7407.patch
 
 # Patches at the end
 90_gnutls.patch
